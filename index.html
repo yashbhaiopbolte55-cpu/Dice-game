@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dice Roller</title>
+<style>
+body{margin:0;background:#222;display:flex;justify-content:center;align-items:center;height:100vh;font-family:Arial}
+.c{text-align:center}
+#d{width:160px;height:160px;background:#fff;border-radius:20px;padding:15px;border:5px solid #ddd;display:grid;grid-template:repeat(3,1fr)/repeat(3,1fr);margin:auto;box-shadow:0 15px 30px #0008;transition:.08s}
+.p{width:20px;height:20px;background:#000;border-radius:50%;margin:auto;visibility:hidden}
+.s{visibility:visible}
+button{margin-top:30px;padding:16px 40px;font-size:24px;border:none;border-radius:12px;background:#09f;color:#fff;font-weight:bold}
+h2{color:#fff}
+</style>
+</head>
+<body>
+<div class="c">
+<div id="d"></div>
+<button onclick="roll()">🎲 ROLL</button>
+<h2 id="t">Roll the Dice</h2>
+</div>
+
+<script>
+const d=document.getElementById("d"),t=document.getElementById("t");
+for(let i=0;i<9;i++){let x=document.createElement("div");x.className="p";d.appendChild(x);}
+const f={1:[4],2:[0,8],3:[0,4,8],4:[0,2,6,8],5:[0,2,4,6,8],6:[0,2,3,5,6,8]};
+function draw(n){
+let p=document.querySelectorAll(".p");
+p.forEach(e=>e.classList.remove("s"));
+f[n].forEach(i=>p[i].classList.add("s"));
+}
+draw(1);
+let busy=false;
+function roll(){
+if(busy)return;
+busy=true;
+if(navigator.vibrate)navigator.vibrate([40,30,40,30,40]);
+let c=0;
+let a=setInterval(()=>{
+let r=Math.floor(Math.random()*6)+1;
+draw(r);
+d.style.transform=`rotate(${Math.random()*360}deg) scale(${0.9+Math.random()*0.2})`;
+if(++c>25){
+clearInterval(a);
+let n=Math.floor(Math.random()*6)+1;
+draw(n);
+d.style.transform="rotate(0deg) scale(1)";
+t.innerHTML="🎉 You rolled "+n;
+if(navigator.vibrate)navigator.vibrate(150);
+busy=false;
+}
+},70);
+}
+</script>
+</body>
+</html>
